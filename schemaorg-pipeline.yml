@@ -1,16 +1,16 @@
 name: Draai schema.org pipeline
 
 on:
-  workflow_dispatch:
+  workflow_dispatch:     # Handmatig starten via GitHub UI
   schedule:
-    - cron: "0 3 * * *"
+    - cron: "0 3 * * *"   # Dagelijks om 03:00 uitvoeren
 
 jobs:
   run-schemaorg-pipeline:
     runs-on: windows-latest
 
     steps:
-      - name: Haal repo op
+      - name: Haal repository op
         uses: actions/checkout@v4
 
       - name: Installeer Node.js
