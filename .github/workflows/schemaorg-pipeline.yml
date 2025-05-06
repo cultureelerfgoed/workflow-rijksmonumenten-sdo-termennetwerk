@@ -17,26 +17,25 @@ jobs:
         run: |
           Invoke-WebRequest -Uri https://static.triply.cc/cli/triplydb.exe -OutFile triplydb.exe
 
-      - name: Add TriplyDB CLI to PATH
-        run: |
-          echo "$(pwd)" >> $env:GITHUB_PATH
-
       - name: Run TriplyDB pipeline
-        env:
-          TRIPLYDB_TOKEN: ${{ secrets.TRIPLYDB_TOKEN }}
         run: |
           .\triplydb.exe run-pipeline `
-            --token $env:TRIPLYDB_TOKEN `
+            --token "${{ secrets.TRIPLYDB_TOKEN }}" `
             --account rce `
             pipeline-rm-sdo.json
 
-      - name: Synchroniseer Virtuoso service
+      - name: Synchroniseer Triply services (Virtuoso en Jena)
         shell: pwsh
-        env:
-          TRIPLYDB_TOKEN: ${{ secrets.TRIPLYDB_TOKEN }}
         run: |
-          curl -X POST `
-            -H "Authorization: Bearer $env:TRIPLYDB_TOKEN" `
-            -H "Content-Type: application/json" `
-            -d '{ "sync": true }' `
-            "https://api.linkeddata.cultureelerfgoed.nl/datasets/rce/Rijksmonumenten-sdo/services/virtuoso"
+          $headers = @{
+            "Authorization" = "Bearer ${{ secrets.TRIPLYDB_TOKEN }}"
+            "Content-Type" = "application/json"
+          }
+
+          $body = '{ "sync": true }'
+
+          $services = @("virtuoso", "jena")
+          foreach ($service in $services) {
+            $url = "https://api.linkeddata.cultureelerfgoed.nl/datasets/rce/Rijksmonumenten-sdo/services/$service"
+            Invoke-RestMethod -Uri $url -Method POST -Headers $headers -Body $body
+          }
