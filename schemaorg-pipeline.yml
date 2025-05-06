@@ -1,0 +1,31 @@
+name: Draai schema.org pipeline
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 3 * * *"
+
+jobs:
+  run-schemaorg-pipeline:
+    runs-on: windows-latest
+
+    steps:
+      - name: Haal repo op
+        uses: actions/checkout@v4
+
+      - name: Installeer Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Installeer Triply CLI
+        run: npm install -g triplydb
+
+      - name: Draai TriplyDB pipeline
+        env:
+          TRIPLYDB_TOKEN: ${{ secrets.TRIPLYDB_TOKEN }}
+        run: |
+          triplydb run-pipeline `
+            --token $env:TRIPLYDB_TOKEN `
+            --account rce `
+            pipeline-rm-sdo.json
