@@ -1,6 +1,6 @@
 {
   "version": 0.2,
-  "sourceDataset": "rce/Rijksmonumenten",
+  "sourceDataset": "rce/cho",
   "targetDataset": "rce/Rijksmonumenten-sdo",
   "targetGraphName": "https://linkeddata.cultureelerfgoed.nl/graph/rijksmonumenten-sdo",
   "queries": [
