@@ -1,23 +1,31 @@
 name: Draai schema.org pipeline
 
 on:
-  workflow_dispatch:     # Handmatig starten via GitHub UI
+  workflow_dispatch:
   schedule:
-    - cron: "0 3 * * *"   # Dagelijks om 03:00 uitvoeren
+    - cron: "0 3 * * *"
 
 jobs:
-  run-schemaorg-pipeline:
+  deploy:
     runs-on: windows-latest
 
     steps:
-      - name: Haal repository op
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Draai TriplyDB pipeline vanaf lokale CLI
+      - name: Download TriplyDB CLI
+        run: |
+          Invoke-WebRequest -Uri https://static.triply.cc/cli/triplydb.exe -OutFile triplydb.exe
+
+      - name: Add TriplyDB CLI to PATH
+        run: |
+          echo "$(pwd)" >> $env:GITHUB_PATH
+
+      - name: Run TriplyDB pipeline
         env:
           TRIPLYDB_TOKEN: ${{ secrets.TRIPLYDB_TOKEN }}
         run: |
-          tools\triplydb.exe run-pipeline `
+          .\triplydb.exe run-pipeline `
             --token $env:TRIPLYDB_TOKEN `
             --account rce `
             pipeline-rm-sdo.json
