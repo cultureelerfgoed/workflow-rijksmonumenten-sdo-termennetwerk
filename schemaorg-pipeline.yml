@@ -29,3 +29,14 @@ jobs:
             --token $env:TRIPLYDB_TOKEN `
             --account rce `
             pipeline-rm-sdo.json
+
+      - name: Synchroniseer Virtuoso service
+        shell: pwsh
+        env:
+          TRIPLYDB_TOKEN: ${{ secrets.TRIPLYDB_TOKEN }}
+        run: |
+          curl -X POST `
+            -H "Authorization: Bearer $env:TRIPLYDB_TOKEN" `
+            -H "Content-Type: application/json" `
+            -d '{ "sync": true }' `
+            "https://api.linkeddata.cultureelerfgoed.nl/datasets/rce/Rijksmonumenten-sdo/services/virtuoso"
