@@ -1,0 +1,42 @@
+name: Draai schema.org pipeline
+
+on:
+  workflow_dispatch:     # Handmatig starten via GitHub UI
+  schedule:
+    - cron: "0 3 * * *"   # Dagelijks om 03:00 uitvoeren
+
+jobs:
+  run-schemaorg-pipeline:
+    runs-on: windows-latest
+
+    steps:
+      - name: Haal repository op
+        uses: actions/checkout@v4
+
+      - name: Installeer Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Installeer Triply CLI
+        run: npm install -g triplydb
+
+      - name: Draai TriplyDB pipeline
+        env:
+          TRIPLYDB_TOKEN: ${{ secrets.TRIPLYDB_TOKEN }}
+        run: |
+          triplydb run-pipeline `
+            --token $env:TRIPLYDB_TOKEN `
+            --account rce `
+            pipeline-rm-sdo.json
+
+      - name: Synchroniseer Virtuoso service
+        shell: pwsh
+        env:
+          TRIPLYDB_TOKEN: ${{ secrets.TRIPLYDB_TOKEN }}
+        run: |
+          curl -X POST `
+            -H "Authorization: Bearer $env:TRIPLYDB_TOKEN" `
+            -H "Content-Type: application/json" `
+            -d '{ "sync": true }' `
+            "https://api.linkeddata.cultureelerfgoed.nl/datasets/rce/Rijksmonumenten-sdo/services/virtuoso"
