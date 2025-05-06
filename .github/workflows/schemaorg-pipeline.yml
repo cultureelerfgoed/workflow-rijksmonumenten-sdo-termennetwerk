@@ -13,19 +13,11 @@ jobs:
       - name: Haal repository op
         uses: actions/checkout@v4
 
-      - name: Installeer Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-
-      - name: Installeer Triply CLI
-        run: npm install -g triplydb
-
-      - name: Draai TriplyDB pipeline
+      - name: Draai TriplyDB pipeline vanaf lokale CLI
         env:
           TRIPLYDB_TOKEN: ${{ secrets.TRIPLYDB_TOKEN }}
         run: |
-          triplydb run-pipeline `
+          tools\triplydb.exe run-pipeline `
             --token $env:TRIPLYDB_TOKEN `
             --account rce `
             pipeline-rm-sdo.json
