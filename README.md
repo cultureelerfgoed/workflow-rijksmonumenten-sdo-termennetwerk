@@ -1,36 +1,45 @@
-- De graph wordt gepubliceerd in de dataset `rce/Rijksmonumenten-sdo`, zodat deze beschikbaar is voor het termennetwerk.
 
-## Bestanden
+- De output komt in de dataset `rce/Rijksmonumenten-sdo`.
+- De Triply-services `virtuoso` en `jena` worden automatisch gesynchroniseerd zodat het termennetwerk bijgewerkt is.
 
-| Bestand                        | Omschrijving                                  |
-|-------------------------------|-----------------------------------------------|
-| `.github/workflows/schemaorg-pipeline.yml` | GitHub Actions workflow                      |
-| `pipeline-rm-sdo.json`        | Pipeline-configuratie voor TriplyDB           |
+## Bestandsoverzicht
+
+| Bestand                                | Functie                                                   |
+|----------------------------------------|------------------------------------------------------------|
+| `.github/workflows/schemaorg-pipeline.yml` | GitHub Actions workflow die alles uitvoert                |
+| `pipeline-rm-sdo.json`                 | Configuratiebestand voor de TriplyDB pipeline             |
+| `triplydb.exe`                         | Wordt automatisch gedownload tijdens de workflow          |
 
 ## Secrets
 
-De workflow maakt gebruik van een beveiligd TriplyDB-token via GitHub Secrets.
+De workflow gebruikt een TriplyDB-token die als GitHub Secret is opgeslagen.
 
-### Vereist secret:
-
-| Naam             | Omschrijving                     |
-|------------------|----------------------------------|
-| `TRIPLYDB_TOKEN` | API-token met schrijfrechten op datasets |
+| Secret             | Omschrijving                                  |
+|--------------------|-----------------------------------------------|
+| `TRIPLYDB_TOKEN`   | Persoonlijke Triply API-token met toegang tot `rce` datasets |
 
 Toevoegen via:  
-**GitHub repo > Settings > Secrets and variables > Actions > New secret**
+**Settings > Secrets and variables > Actions > New repository secret**
 
-## Uitvoeren
+## Hoe voert u dit uit?
 
-- Automatisch: dagelijks om 03:00 's nachts.
-- Handmatig: via de **Actions**-tab in GitHub → **Run workflow**
+### Automatisch
 
-## Voorwaarden
+- De workflow draait elke dag automatisch om **03:00 UTC** via een cronjob.
 
-- De construct-query moet beschikbaar zijn als `rce/Rijksmonumenten-sdo-construct` (versie 6) in TriplyDB.
-- De graph URI en datasetnamen zijn hardcoded in `pipeline-rm-sdo.json`.
+### Handmatig
+
+1. Ga naar de **Actions-tab** in deze repository.
+2. Klik op **"Draai schema.org pipeline"**.
+3. Klik op **"Run workflow"** om de actie handmatig te starten.
+
+## Geen Python of dependencies vereist
+
+- Er is **geen `requirements.txt`** of `pip install` nodig.
+- De Triply CLI (`triplydb.exe`) wordt automatisch gedownload tijdens de workflow.
+- Alles draait zelfstandig op de GitHub Windows-runner.
 
 ## Onderhoud
 
-- Om queryversies bij te werken: pas `version` aan in `pipeline-rm-sdo.json`.
-- Om ander gedrag te automatiseren (bijv. sync van services): breid de workflow uit met een `curl` POST naar de gewenste Triply service endpoint.
+- Om een nieuwe versie van de construct-query te gebruiken, wijzig het versienummer in `pipeline-rm-sdo.json`.
+- U kunt extra services toevoegen aan de sync-stap door het workflowbestand uit te breiden.
