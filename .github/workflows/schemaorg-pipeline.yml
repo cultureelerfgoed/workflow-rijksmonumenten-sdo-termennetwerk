@@ -32,6 +32,6 @@ jobs:
 
           $services = @("virtuoso", "jena")
           foreach ($service in $services) {
-            $url = "https://api.linkeddata.cultureelerfgoed.nl/datasets/RCEBot/Rijksmonumenten-sdo/services/$service"
+            $url = "https://api.linkeddata.cultureelerfgoed.nl/datasets/rce/Rijksmonumenten-sdo/services/$service"
             Invoke-RestMethod -Uri $url -Method POST -Headers $headers -Body $body
           }
