@@ -18,7 +18,8 @@ jobs:
           Invoke-WebRequest -Uri https://static.triply.cc/cli/triplydb.exe -OutFile triplydb.exe
 
       - name: Run TriplyDB pipeline
-        run: .\triplydb.exe run-pipeline --token "${{ secrets.TRIPLYDB_TOKEN }}" --account rce --url https://api.linkeddata.cultureelerfgoed.nl pipeline-rm-sdo.json
+        run: .\triplydb.exe run-pipeline --token "${{ secrets.TRIPLYDB_TOKEN }}" --url https://api.linkeddata.cultureelerfgoed.nl pipeline-rm-sdo.json
+
 
 
       - name: Synchroniseer Triply services (Virtuoso en Jena)
