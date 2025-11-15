@@ -31,33 +31,8 @@ jobs:
           $body = '{ "sync": true }'
 
           $services = @("Rijksmonumenten-sdo", "Rijksmonumenten-sdo-jena")
-
           foreach ($service in $services) {
             $url = "https://api.linkeddata.cultureelerfgoed.nl/datasets/rce/Rijksmonumenten-sdo/services/$service"
             Write-Host "Synchroniseer service: $service"
-
-            try {
-              Invoke-RestMethod -Uri $url -Method POST -Headers $headers -Body $body -ErrorAction Stop
-              Write-Host "Sync gestart voor service: $service"
-            }
-            catch {
-              $errorJson = $null
-
-              if ($_.ErrorDetails.Message) {
-                try {
-                  $errorJson = $_.ErrorDetails.Message | ConvertFrom-Json
-                }
-                catch {
-                }
-              }
-
-              if ($errorJson -and $errorJson.message -eq "Cannot sync a service that is not out of sync.") {
-                Write-Host "Service $service is al in sync. Niets te doen."
-              }
-              else {
-                Write-Host "Fout bij synchroniseren van $service:"
-                Write-Host $_
-                throw
-              }
-            }
+            Invoke-RestMethod -Uri $url -Method POST -Headers $headers -Body $body
           }
