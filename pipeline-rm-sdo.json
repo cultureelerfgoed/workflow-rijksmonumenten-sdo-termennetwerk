@@ -6,7 +6,7 @@
   "queries": [
     {
       "name": "rce/Rijksmonumenten-sdo-construct",
-      "version": 6
+      "version": 7
     }
   ]
 }
