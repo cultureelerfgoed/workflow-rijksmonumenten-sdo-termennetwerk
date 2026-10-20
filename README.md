@@ -1,47 +1,80 @@
+# Rijksmonumenten in schema.org voor het Termennetwerk
 
-- De data komt terecht in de dataset `rce/Rijksmonumenten-sdo`.
-- Na afloop worden automatisch de publicatieservices gesynchroniseerd:
-- Elasticsearch: `Rijksmonumenten-sdo-elas`
-- Jena: `Rijksmonumenten-sdo-jena`
+Deze workflow zet rijksmonumentendata uit de Linked Data Voorziening
+van de Rijksdienst voor het Cultureel Erfgoed (RCE) om naar schema.org.
+De uitvoer komt in een afzonderlijke TriplyDB-dataset voor het Termennetwerk.
 
-## Bestandsoverzicht
+Na de pipeline vraagt de workflow synchronisatie aan van de
+Elasticsearch- en Jena-services van de doeldataset.
 
-| Bestand                                | Functie                                                   |
-|----------------------------------------|------------------------------------------------------------|
-| `.github/workflows/schemaorg-pipeline.yml` | GitHub Actions workflowbestand                          |
-| `pipeline-rm-sdo.json`                 | Configuratiebestand voor de TriplyDB pipeline             |
-| `triplydb.exe`                         | Wordt automatisch gedownload tijdens de workflow          |
+## Gegevensverwerking
 
-## Secrets
+| Onderdeel | Waarde |
+|---|---|
+| Brondata | `rce/cho` |
+| Opgeslagen query | `rce/Rijksmonumenten-sdo-construct` |
+| Queryversie | `7` |
+| Doeldataset | `rce/Rijksmonumenten-sdo` |
+| Doelgraaf | `https://linkeddata.cultureelerfgoed.nl/graph/rijksmonumenten-sdo` |
+| Elasticsearch-service | `Rijksmonumenten-sdo-elas` |
+| Jena-service | `Rijksmonumenten-sdo-jena` |
 
-| Secret             | Omschrijving                                  |
-|--------------------|-----------------------------------------------|
-| `TRIPLYDB_TOKEN`   | API-token van Triply-gebruiker `RCEBot`       |
-
-Instellen via:  
-**Settings > Secrets and variables > Actions > New repository secret**
+De workflow gebruikt het platform:
+https://api.linkeddata.cultureelerfgoed.nl
 
 ## Uitvoeren
 
 ### Automatisch
 
-- Draait elke nacht om 03:00 UTC via cron.
+De workflow staat dagelijks gepland om 03:00 UTC.
+Dat is 04:00 uur in de Nederlandse wintertijd en 05:00 uur in de zomertijd.
 
 ### Handmatig
 
-1. Ga naar de **Actions-tab** in deze repository.
-2. Kies de workflow "Draai schema.org pipeline".
+1. Open de tab **Actions**.
+2. Kies **Draai schema.org pipeline**.
 3. Klik op **Run workflow**.
 
-## Opmerkingen
+## Configuratie
 
-- De CLI gebruikt geen `--account`, het juiste contextaccount wordt automatisch bepaald via de token.
-- Platform:  
-[https://api.linkeddata.cultureelerfgoed.nl](https://api.linkeddata.cultureelerfgoed.nl)
+Stel het repositorysecret `TRIPLYDB_TOKEN` in met het API-token
+van Triply-gebruiker `RCEBot`.
+
+Je vindt dit onder:
+**Settings > Secrets and variables > Actions > New repository secret**.
+
+Het token moet toegang hebben tot de benodigde datasets en query,
+en de publicatieservices kunnen laten synchroniseren.
+
+De services `Rijksmonumenten-sdo-elas` en `Rijksmonumenten-sdo-jena`
+moeten in de doeldataset bestaan.
+
+## Bestanden
+
+| Bestand | Functie |
+|---|---|
+| `.github/workflows/schemaorg-pipeline.yml` | Planning, uitvoering en synchronisatieverzoeken |
+| `pipeline-rm-sdo.json` | Bron, doel, doelgraaf en queryversie |
+| `LICENSE` | Licentietekst van deze repository |
+
+De workflow draait op een Windows-runner en downloadt bij iedere
+uitvoering de TriplyDB CLI als `triplydb.exe`.
+
+## Controle na uitvoering
+
+Bekijk de uitvoer van de workflow in **Actions**.
+Controleer bij problemen welke stap faalt: het downloaden van de CLI,
+de pipeline of het aanvragen van de servicesynchronisatie.
+
+De workflow verstuurt synchronisatieverzoeken, maar bevat geen
+vervolgcontrole die wacht totdat beide services klaar zijn.
 
 ## Beheer
 
-- De query wordt uitgevoerd: `rce/Rijksmonumenten-sdo-construct`, versie 6.
-- De brondata staat in `rce/cho`
-- De services `Rijksmonumenten-sdo-elas` (Elasticsearch) en `Rijksmonumenten-sdo-jena` (Jena) moeten bestaan en bereikbaar zijn.
+Pas de queryversie en datasetinstellingen aan in `pipeline-rm-sdo.json`.
+Werk deze README bij wanneer die instellingen veranderen.
 
+## Licentie
+
+Deze repository bevat een CC0-1.0-licentie. Raadpleeg `LICENSE`.
+Controleer de gebruiksvoorwaarden van de brondata afzonderlijk.
