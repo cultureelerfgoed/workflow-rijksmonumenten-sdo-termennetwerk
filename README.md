@@ -1,7 +1,7 @@
 
 - De data komt terecht in de dataset `rce/Rijksmonumenten-sdo`.
 - Na afloop worden automatisch de publicatieservices gesynchroniseerd:
-- Virtuoso: `Rijksmonumenten-sdo`
+- Elasticsearch: `Rijksmonumenten-sdo-elas`
 - Jena: `Rijksmonumenten-sdo-jena`
 
 ## Bestandsoverzicht
@@ -43,5 +43,5 @@ Instellen via:
 
 - De query wordt uitgevoerd: `rce/Rijksmonumenten-sdo-construct`, versie 6.
 - De brondata staat in `rce/cho`
-- De services `Rijksmonumenten-sdo` (Virtuoso) en `Rijksmonumenten-sdo-jena` (Jena) moeten bestaan en bereikbaar zijn.
+- De services `Rijksmonumenten-sdo-elas` (Elasticsearch) en `Rijksmonumenten-sdo-jena` (Jena) moeten bestaan en bereikbaar zijn.
 
